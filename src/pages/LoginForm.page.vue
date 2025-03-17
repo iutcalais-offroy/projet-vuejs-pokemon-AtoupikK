@@ -36,7 +36,7 @@
             </n-form-item-row>
 
             <n-form-item-row label="Mot de passe">
-              <n-input v-model:value="loginPassword" placeholder="motdepasse123"/>
+              <n-input v-model:value="loginPassword" placeholder="motdepasse123" type="password"/>
             </n-form-item-row>
 
           </n-form>
@@ -87,10 +87,11 @@ const logIn = async () =>  {
       email: loginEmail.value,
       password: loginPassword.value,
     });
+    console.log("Réponse de l'API :", response.data);
 
     console.log("Connexion réussie", response.data);
-    localStorage.userid = response.data.user.id;
-    localStorage.token = response.data.token;
+    localStorage.setItem("token", response.data.token);
+    localStorage.setItem("userid", response.data.user.id);
     window.location.href='/deck-builder';
   } 
   catch (error)  {
