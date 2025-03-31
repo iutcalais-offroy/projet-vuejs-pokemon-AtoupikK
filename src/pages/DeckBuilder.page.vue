@@ -1,7 +1,8 @@
 <template>
   <n-space vertical>
+    <n-input v-model:value="recherche" placeholder="Recherchez un Pokémon..." clearable />
     <n-grid cols="3" x-gap="250" y-gap="16">
-      <n-gi v-for="pokemon in pokemons" :key="pokemon.id">
+      <n-gi v-for="pokemon in pokemonsFiltres" :key="pokemon.id">
         <n-card class="pokemon-card">
           <template #header>
             <n-text strong class="pokemon-name">{{ pokemon.name }}</n-text>
@@ -33,21 +34,29 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref, computed, onMounted } from "vue";
 import axios from "axios";
 
-const pokemons = ref([]);
+const pokemonsFiltres = ref([]);
+const recherche = ref("");
 
 const fetchPokemons = async () =>  {
   try {
     const response = await axios.get("https://pokemon-api-seyrinian-production.up.railway.app/pokemon-cards");
-    pokemons.value = response.data;
+    pokemonsFiltres.value = response.data;
   } catch (error) {
     console.error("Erreur lors du chargement des Pokémon :", error);
   }
 };
 
 onMounted(fetchPokemons);
+
+const filteredPokemons = computed(() =>  {
+  return pokemonsFiltres.value.filter((pokemon) =>
+    pokemon.name.toLowerCase().includes(searchQuery.value.toLowerCase())
+  );
+});
+
 
 const getTypeColor = (type) =>  {
   const colors = {
